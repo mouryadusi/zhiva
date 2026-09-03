@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------
+   ZHIVA design tokens.
+   Base theme = warm neutral light surface, deep dark accents reserved
+   for emphasis (hero, night mode). Accessibility presets below override
+   these variables at runtime — nothing here is hardcoded into components.
+---------------------------------------------------------------------- */
+:root {
+  --surface: 250 248 244;         /* warm off-white */
+  --surface-raised: 255 255 253;
+  --surface-sunken: 241 237 230;
+  --ink: 26 24 21;
+  --ink-muted: 96 90 82;
+  --ink-faint: 150 143 133;
+  --border: 224 218 208;
+  --accent: 47 74 61;             /* deep muted green — restrained brand color */
+  --accent-ink: 255 255 255;
+  --positive: 61 122 91;
+  --caution: 176 122 41;
+  --critical: 176 58 46;
+
+  --font-editorial: 'Fraunces', ui-serif, Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --motion-scale: 1;
+  --spacing-scale: 1;
+  --text-scale: 1;
+}
+
+/* Night — deep dark surfaces, softened contrast on pure black */
+.a11y-night {
+  --surface: 17 17 16;
+  --surface-raised: 26 25 23;
+  --surface-sunken: 12 12 11;
+  --ink: 236 233 227;
+  --ink-muted: 176 170 160;
+  --ink-faint: 120 114 105;
+  --border: 43 42 38;
+  --accent: 138 178 158;
+  --accent-ink: 12 12 11;
+}
+
+/* High contrast — maximize separation, independent of light/dark */
+.a11y-high-contrast {
+  --border: 0 0 0;
+  --ink-muted: var(--ink);
+  --ink-faint: var(--ink);
+}
+.a11y-high-contrast.a11y-night {
+  --border: 255 255 255;
+}
+
+/* Colour-blindness support — semantic colours are redefined with
+   distinct lightness values (not just distinct hue) so status is still
+   readable when hue discrimination is reduced. This is a real,
+   partial mitigation; pairing colour with an icon/label in each
+   component is the fuller fix and is noted as a follow-up in the README. */
+.a11y-colour-safe {
+  --positive: 37 99 160;   /* blue, high lightness contrast from critical */
+  --critical: 176 58 46;   /* kept dark/saturated for max luminance separation */
+  --caution: 140 90 20;
+}
+
+/* Low vision — larger text & controls, stronger contrast */
+.a11y-low-vision {
+  --text-scale: 1.25;
+}
+
+/* Comfortable spacing — more breathing room for tremor / imprecise movement */
+.a11y-comfortable-spacing {
+  --spacing-scale: 1.35;
+}
+
+/* Dyslexia-friendly type rhythm */
+.a11y-dyslexia {
+  --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  word-spacing: 0.04em;
+}
+
+/* Reduced motion — collapses to near-zero; components read this to skip
+   non-essential animation entirely, not just shorten it. */
+.a11y-reduced-motion {
+  --motion-scale: 0;
+}
+.a11y-reduced-motion .animate-pulse {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-scale: 0; }
+  .animate-pulse { animation: none; }
+}
+
+/* Focus mode — quiets secondary chrome so the primary task reads clearly */
+.a11y-focus [data-secondary] {
+  opacity: 0.55;
+}
+
+html {
+  background: rgb(var(--surface));
+  color-scheme: light dark;
+}
+
+body {
+  background: rgb(var(--surface));
+  color: rgb(var(--ink));
+  font-size: calc(1rem * var(--text-scale));
+  font-family: var(--font-body);
+}
+
+* {
+  border-color: rgb(var(--border));
+}
+
+/* Respect the motion scale on any transform/opacity transition */
+.motion-safe-transition {
+  transition-duration: calc(300ms * var(--motion-scale));
+}
+
+::selection {
+  background: rgb(var(--accent) / 0.18);
+}
