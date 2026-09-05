@@ -165,13 +165,13 @@ async function compareMonths(supabase: SupabaseClient, userId: string): Promise<
   const [{ data: thisMonth }, { data: lastMonth }, { data: categories }] = await Promise.all([
     supabase
       .from('transactions')
-      .select('amount, category_id')
+      .select('kind, amount, category_id')
       .eq('user_id', userId)
       .eq('kind', 'expense')
       .gte('occurred_at', thisMonthStart.toISOString()),
     supabase
       .from('transactions')
-      .select('amount, category_id')
+      .select('kind, amount, category_id')
       .eq('user_id', userId)
       .eq('kind', 'expense')
       .gte('occurred_at', lastMonthStart.toISOString())
@@ -404,7 +404,7 @@ async function unusualSpending(supabase: SupabaseClient, userId: string): Promis
   const [{ data: recent }, { data: categories }] = await Promise.all([
     supabase
       .from('transactions')
-      .select('amount, category_id, occurred_at')
+      .select('kind, amount, category_id, occurred_at')
       .eq('user_id', userId)
       .eq('kind', 'expense')
       .gte('occurred_at', threeMonthsAgo.toISOString()),

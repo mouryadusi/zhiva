@@ -16,7 +16,27 @@ export default async function CalendarPage({
   if (!user) return null;
 
   const now = new Date();
-  const [year, month] = (searchParams.month ?? `${now.getFullYear()}-${now.getMonth() + 1}`).split('-').map(Number);
+  const monthParam = searchParams.month ?? `${now.getFullYear()}-${now.getMonth() + 1}`;
+  const parts = monthParam.split('-').map(Number);
+  const parsedYear = parts[0];
+  const parsedMonth = parts[1];
+
+  // Validate rather than trust the query param: a malformed or
+  // out-of-range ?month= value falls back to the current month
+  // instead of constructing an invalid Date silently.
+  const isValid =
+    parsedYear != null &&
+    parsedMonth != null &&
+    Number.isInteger(parsedYear) &&
+    Number.isInteger(parsedMonth) &&
+    parsedMonth >= 1 &&
+    parsedMonth <= 12 &&
+    parsedYear >= 1970 &&
+    parsedYear <= 9999;
+
+  const year = isValid ? parsedYear : now.getFullYear();
+  const month = isValid ? parsedMonth : now.getMonth() + 1;
+
   const monthStart = new Date(year, month - 1, 1);
   const monthEnd = new Date(year, month, 1);
 

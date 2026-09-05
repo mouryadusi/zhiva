@@ -69,7 +69,8 @@ async function detectBudgetRisk(supabase: SupabaseClient, userId: string): Promi
       worst.pct >= 1
         ? `${worst.name} is over budget: ${worst.spent.toFixed(2)} of ${worst.limit.toFixed(2)}.`
         : `${worst.name} is close to its budget: ${worst.spent.toFixed(2)} of ${worst.limit.toFixed(2)} (${Math.round(worst.pct * 100)}%).`,
-    evidence: worst,
+    evidence: { ...worst },
+
   };
 }
 
@@ -78,7 +79,7 @@ async function detectUnusualCategory(supabase: SupabaseClient, userId: string): 
   threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
   const { data: recent } = await supabase
     .from('transactions')
-    .select('amount, category_id, occurred_at')
+    .select('kind, amount, category_id, occurred_at')
     .eq('user_id', userId)
     .eq('kind', 'expense')
     .gte('occurred_at', threeMonthsAgo.toISOString());

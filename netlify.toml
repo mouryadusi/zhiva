@@ -1,0 +1,20 @@
+# Netlify deploy config for ZHIVA (Next.js 14 App Router).
+#
+# Netlify's modern build image auto-detects Next.js and installs
+# @netlify/plugin-nextjs automatically — this file exists to make the
+# build command, publish directory, and plugin explicit rather than
+# relying on auto-detection, since auto-detection can be silently
+# overridden by a site's dashboard-configured "Build settings" (Site
+# configuration → Build & deploy → Build settings). If those fields
+# were ever set manually to something else (e.g. an empty build
+# command, or a publish directory other than .next), Netlify will use
+# the dashboard values instead of this file's [build] block — check
+# and clear/correct them in the dashboard if deploys still 404 after
+# this file is added. See the accompanying report for exactly what to
+# check.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

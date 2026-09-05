@@ -139,7 +139,7 @@ export async function getCategoryBreakdown(
 ): Promise<Fact<CategoryAmount[]>> {
   let query = supabase
     .from('transactions')
-    .select('amount, category_id')
+    .select('amount, category_id, kind')
     .eq('user_id', userId)
     .eq('kind', 'expense')
     .gte(

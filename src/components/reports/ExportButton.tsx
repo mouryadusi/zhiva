@@ -3,6 +3,14 @@
 import { Button } from '@/components/design-system/Button';
 import type { Account, Category, Transaction } from '@/types/database';
 
+// Only id/name are ever read for categories and accounts — requiring
+// the full Category/Account shape forced every caller to over-fetch
+// (or fight TypeScript with a cast) just to satisfy this component.
+// Pick<> is the same convention already used throughout money.ts for
+// exactly this reason.
+type CategoryRef = Pick<Category, 'id' | 'name'>;
+type AccountRef = Pick<Account, 'id' | 'name'>;
+
 function toCsvValue(value: string | number | null): string {
   if (value == null) return '';
   const str = String(value);
@@ -13,7 +21,7 @@ function toCsvValue(value: string | number | null): string {
   return str;
 }
 
-function buildRows(transactions: Transaction[], categories: Category[], accounts: Account[]) {
+function buildRows(transactions: Transaction[], categories: CategoryRef[], accounts: AccountRef[]) {
   const categoryName = (id: string | null) => (id ? categories.find((c) => c.id === id)?.name ?? '' : '');
   const accountName = (id: string | null) => (id ? accounts.find((a) => a.id === id)?.name ?? '' : '');
 
@@ -54,8 +62,8 @@ export function ExportButton({
   rangeLabel,
 }: {
   transactions: Transaction[];
-  categories: Category[];
-  accounts: Account[];
+  categories: CategoryRef[];
+  accounts: AccountRef[];
   format: 'csv' | 'json';
   rangeLabel: string;
 }) {
